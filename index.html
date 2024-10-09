@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Electron App</title>
+	<link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+	<div id="sidebar">
+		<ul>
+			<li><button id="nav-check-space">Check Disk Space</button></li>
+			<li><button id="nav-clear-space">Clear</button></li>
+			<li><button id="nav-list-files">List Files in ~/dev</button></li>
+		</ul>
+	</div>
+
+	<div id="main-content">
+		<h1>Disk Space Management</h1>
+		<div id="content-area">
+			<p>Choose an option from the side menu</p>
+		</div>
+	</div>
+
+	<script>
+		const { ipcRenderer } = require('electron');
+
+		document.getElementById('nav-check-space').addEventListener('click', () => {
+			ipcRenderer.send('check-disk-space');
+		});
+
+		document.getElementById('nav-clear-space').addEventListener('click', () => {
+			document.getElementById('content-area').innerText = 'Output cleared.';
+		});
+
+		document.getElementById('nav-list-files').addEventListener('click', () => {
+			ipcRenderer.send('list-files');
+		});
+
+		ipcRenderer.on('disk-space-result', (event, result) => {
+			document.getElementById('content-area').innerText = result;
+		});
+
+		ipcRenderer.on('list-files-result', (event, result) => {
+			document.getElementById('content-area').innerText = result;
+		});
+	</script>
+</body>
+
+</html>
